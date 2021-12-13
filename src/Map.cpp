@@ -39,10 +39,8 @@ static const TCODColor darkWall(0,0,100);
 };
 
 void Map::dig(int x_inicial,int y_inicial, int x_final, int y_final){
-  for (int i = x_inicial; i < x_final; i++)
-  {
-    for (int j = y_inicial; j < y_final; j++)
-    {
+  for (int i = x_inicial; i <= x_final; i++){
+    for (int j = y_inicial; j <= y_final; j++){
      setGround(i,j);
     }
 

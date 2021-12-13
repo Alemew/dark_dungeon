@@ -8,8 +8,8 @@ Engine::Engine(){
   first = false;
   createRoom(first,25,25,50,50);
 
-  map->dig((22/2),(22/2),(75/2),(22/2)+1);
-  map->dig((75/2),(22/2),(75/2)+1,(75/2));
+  map->dig((22/2),(22/2),(75/2),(22/2));
+  map->dig((75/2),(22/2),(75/2),(75/2));
 
   enemy = new Actor(10,10,'&',TCODColor::yellow);
 
