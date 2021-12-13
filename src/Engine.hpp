@@ -2,21 +2,22 @@
 #include "Map.hpp"
 #include "Actor.hpp"
 
+
 #pragma once
+#define FOVRADIOUS_INICIAL
 
 class Engine{
+public:
   Map* map;
   TCODList<Actor*> actors;
   Actor* player;
-  Actor* enemy;
+  int fovRadius;
+  bool computeFov;
 
-public:
   Engine();
   ~Engine();
   void update();
   void render();
-  void createRoom(bool first, int x1, int y1, int x2, int y2);
 };
 
 extern Engine engine;
-

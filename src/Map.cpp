@@ -1,55 +1,153 @@
 #include "Map.hpp"
 #include "libtcod.hpp"
+#include "Engine.hpp"
+
+
+static const int ROOM_MAX_SIZE = 12;
+static const int ROOM_MIN_SIZE = 6;
+
+class BspListener : public ITCODBspCallback {
+private :
+   Map &map; // a map to dig
+   int roomNum; // room number
+   int lastx,lasty; // center of the last room
+public :
+   BspListener(Map &map) : map(map), roomNum(0) {}
+   bool visitNode(TCODBsp *node, void *userData) {
+   if ( node->isLeaf() ) {
+     int x,y,w,h;
+      // dig a room
+      TCODRandom *rng=TCODRandom::getInstance();
+      w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
+      h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
+      x=rng->getInt(node->x+1, node->x+node->w-w-1);
+      y=rng->getInt(node->y+1, node->y+node->h-h-1);
+      map.createRoom(roomNum == 0, x, y, x+w-1, y+h-1);
+      if ( roomNum != 0 ) {
+       // dig a corridor from last room
+        map.dig(lastx,lasty,x+w/2,lasty);
+        map.dig(x+w/2,lasty,x+w/2,y+h/2);
+      }
+      lastx=x+w/2;
+      lasty=y+h/2;
+      roomNum++;
+    }
+       return true;
+   }
+};
 
 
 Map::Map(int width, int height): width(width), height(height){
-
+  //Habrá que inicializar el tiles:
   tiles = new Tile[width*height];
+  map = new TCODMap(width,height);
 
+  //Probar con un dig:
+  TCODBsp bsp(0,0,width,height);
+  bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+  BspListener listener(*this);
+  bsp.traverseInvertedLevelOrder(&listener,NULL);
 
 };
+
 Map::~Map(){
   delete[] tiles;
+  delete map;
 };
 bool Map::isWall(int x, int y) const{
-
-  if (!tiles[x+y*width].canWalk)
-  {
-    return true;
-  }else{
-    return false;
-  }
-
+  //Ir a la posición y marcar que es pared
+  return !map->isWalkable(x,y);
 };
+
 void Map::render() const{
-static const TCODColor darkGround(50,50,150);
-static const TCODColor darkWall(0,0,100);
-  for (int i = 0; i < width; i++)
-  {
-   for (int j = 0; j < height; j++)
-   {
-      if (isWall(i,j))
+  static const TCODColor darkGround(50,50,150);
+  static const TCODColor darkWall(0,0,100);
+  static const TCODColor lightWall(130,110,50);
+  static const TCODColor lightGround(200,180,50);
+
+  for (int i = 0; i < width; i++){
+    for (int j = 0; j < height; j++)
+    {
+      if (map->isInFov(i,j))
       {
-        TCODConsole::root->setCharBackground(i,j,darkWall);
-      }else{
-        TCODConsole::root->setCharBackground(i,j,darkGround);
+         if(isWall(i,j)){
+          TCODConsole::root->setCharBackground(i,j,lightWall);
+        } else{
+          TCODConsole::root->setCharBackground(i,j,lightGround);
+        }
+      }else if (isExplored(i,j)){
+        if(isWall(i,j)){
+          TCODConsole::root->setCharBackground(i,j,darkWall);
+        } else{
+          TCODConsole::root->setCharBackground(i,j,darkGround);
+        }
       }
     }
   }
 };
 
-void Map::dig(int x_inicial,int y_inicial, int x_final, int y_final){
-  for (int i = x_inicial; i <= x_final; i++){
-    for (int j = y_inicial; j <= y_final; j++){
-     setGround(i,j);
+
+void Map::dig(int x_inicial, int y_inicial, int x_final, int y_final){
+    //Swapear si inicial > final
+    if(x_inicial > x_final){
+      int aux = x_inicial;
+      x_inicial = x_final;
+      x_final = aux;
+    }
+
+    if(y_inicial > y_final){
+      int aux = y_inicial;
+      y_inicial = y_final;
+      y_final = aux;
+    }
+
+    //Por último, marcamos el agujero:
+    for(int x = x_inicial; x <= x_final; x++){
+      for(int y = y_inicial; y <= y_final; y++){
+        setWalkable(x,y);
+      }
+    }
+};
+
+void Map::createRoom(bool first, int x1, int y1, int x2, int y2){
+  dig(x1,y1,x2,y2);
+  if(first){
+    //Movemos el actor principal
+    engine.player->x = (x1+x2)/2;
+    engine.player->y = (y1+y2)/2;
+  }else{
+    TCODRandom *rng=TCODRandom::getInstance();
+    int aleatorio=rng->getInt(1, 2);
+    if (aleatorio==1)
+    {
+      Actor* npc = new Actor((x1+x2)/2, (y1+y2)/2, 'O', TCODColor::white);
+      engine.actors.push(npc);
     }
 
   }
-
-}
-
-void Map::setGround(int x, int y){
-
-  tiles[x+y*width].canWalk = true;
-
 };
+
+bool Map::isInFov(int x, int y) const{
+  if (map->isInFov(x,y))
+  {
+    tiles[x+y+width].explored = true;
+    return true;
+  }
+  return false ;
+};
+bool Map::isExplored(int x, int y) const{
+  return tiles[x+y*width].explored;
+};
+void Map::computeFov(){
+  map->computeFov(engine.player->x,engine.player->y,engine.fovRadius);
+};
+
+void Map::setWall(int x, int y){
+  map->setProperties(x, y, false, false);
+};
+
+
+void Map::setWalkable(int x, int y){
+  map->setProperties(x, y, true, true);
+};
+
