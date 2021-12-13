@@ -1,7 +1,6 @@
 #include "libtcod.hpp"
 
-#ifndef DARK_DUNGEON_ACTOR
-#define DARK_DUNGEON_ACTOR
+#pragma once
 
 class Actor {
 public :
@@ -13,4 +12,3 @@ public :
    void render() const;
 };
 
-#endif DARK_DUNGEON_ACTOR

@@ -1,11 +1,13 @@
 #include "libtcod.hpp"
 
-#ifndef DARK_DUNGEON_MAP
-#define DARK_DUNGEON_MAP
+#pragma once
+
+#define ANCHO_MAPA 80
+#define ALTO_MAPA 50
 
 struct Tile {
    bool canWalk; // can we walk through this tile?
-   Tile() : canWalk(true) {}
+   Tile() : canWalk(false) {}
 };
 
 class Map {
@@ -16,10 +18,11 @@ public :
    ~Map();
    bool isWall(int x, int y) const;
    void render() const;
+   void dig(int x_inicial,int y_inicial, int x_final, int y_final);
+
 protected :
    Tile *tiles;
 
-   void setWall(int x, int y);
+   void setGround(int x, int y);
 };
 
-#endif DARK_DUNGEON_MAP
