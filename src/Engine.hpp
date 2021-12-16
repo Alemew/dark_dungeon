@@ -4,7 +4,7 @@
 
 
 #pragma once
-#define FOVRADIOUS_INICIAL
+#define FOVRADIOUS_INICIAL 10
 
 class Engine{
 public:
@@ -17,7 +17,7 @@ public:
   Engine();
   ~Engine();
   void update();
-  void render();
+  void render() ;
 };
 
 extern Engine engine;

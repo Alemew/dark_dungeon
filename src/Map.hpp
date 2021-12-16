@@ -8,7 +8,7 @@
 #define ALTO_MAPA 50
 
 struct Tile {
-   bool explored; // Esta explorado?
+   bool explored; //Está explorado?
    Tile() : explored(false) {}
 };
 
@@ -29,15 +29,15 @@ public :
   bool isInFov(int x, int y) const;
   bool isExplored(int x, int y) const;
   void computeFov();
-
+  bool canWalk(int x, int y)const;
+  void addMonster(int x, int y);
 
 protected :
-
+  Tile *tiles;
   TCODMap *map;
 
-  Tile *tiles;
-
   void setWall(int x, int y);
-  void setWalkable(int x, int y); //Para hacer dig!
+  void setWalkable(int x, int y ); //Para hacer dig!
+
 };
 

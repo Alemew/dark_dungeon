@@ -10,7 +10,7 @@ public :
    TCODColor col; // color
 
    Actor(int x, int y, int ch, const TCODColor &col);
-   void render() const;
+   void render( ) const;
 };
 
 
