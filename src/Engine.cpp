@@ -27,33 +27,7 @@ if (gameStatus == STARTUP)
   gameStatus=IDLE;
 }
 
-int dx = 0;
-int dy = 0;
 
-  TCOD_key_t key;
-  TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
-  switch(key.vk) {
-      case TCODK_UP :
-        dy = -1;
-        break;
-      case TCODK_DOWN :
-        dy = +1;
-        break;
-      case TCODK_LEFT :
-        dx = -1;
-        break;
-      case TCODK_RIGHT :
-        dx = +1;
-        break;
-      default:break;
-  }
-
-  if (dy != 0 || dx !=0){
-    gameStatus = NEW_TURN;
-    if(this->player->moveOrAttack(this->player->x+dx,this->player->y+dy)){
-      map->computeFov();
-    }
-  }
 
   if (gameStatus==NEW_TURN){
     for (Actor* actorAux : engine.actors){
