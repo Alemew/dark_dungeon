@@ -4,7 +4,7 @@ Engine::Engine(): computeFov(true), fovRadius(FOVRADIOUS_INICIAL) {
   TCODConsole::initRoot(ANCHO_MAPA,ALTO_MAPA,"Mi primer Rouguelite",false);
 
   //Jugador
-  player = new Actor(25, 25, '@', TCODColor::yellow);
+  player = new Actor(25, 25, '@', TCODColor::yellow, "Player");
   actors.push(player);
 
 

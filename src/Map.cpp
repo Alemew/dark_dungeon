@@ -170,11 +170,11 @@ void Map::addMonster(int x, int y) {
   if (rng->getInt(1,5)!=5)
   {
     // 4 de cada 5 veces es un orco con color desaturatedGreen y caracter 'o'
-    Actor* ogro = new Actor(x, y, 'O', TCODColor::desaturatedGreen);
+    Actor* ogro = new Actor(x, y, 'O', TCODColor::desaturatedGreen,"Ogro");
     engine.actors.push(ogro);
   }else {
     // 1 de cada 5 veces es un troll con color darkerGreen y caracter 'T'
-    Actor* troll = new Actor(x, y, 'T', TCODColor::darkerGreen);
+    Actor* troll = new Actor(x, y, 'T', TCODColor::darkerGreen, "Troll");
     engine.actors.push(troll);
   }
 
