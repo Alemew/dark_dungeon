@@ -34,22 +34,21 @@ int dy = 0;
 }
 
 bool PlayerAi::moveOrAttack(Actor *owner, int targetx,int targety) {
-   if ( engine.map->isWall(targetx,targety) ){
-     return false;
-   }
+  if ( engine.map->isWall(targetx,targety) ){
+    return false;
+  }
    // look for living actors to attack
-   for (Actor* actorAux : engine.actors) {
-       if ( actorAux->destructible && !actorAux->destructible->isDead() && actorAux->x == targetx && actorAux->y == targety ) {
-           owner->attacker->attack(owner, actorAux);
-           return false;
-       }
-   }
-   // look for corpses
   for (Actor* actorAux : engine.actors) {
-   if ( actorAux->destructible && actorAux->destructible->isDead()
-        && actorAux->x == targetx && actorAux->y == targety ) {
-          std::cout<< "There's a "<<actorAux->name<< " here"<<std::endl;
-   }
+    if ( actorAux->destructible && !actorAux->destructible->isDead() && actorAux->x == targetx && actorAux->y == targety ) {
+      owner->attacker->attack(owner, actorAux);
+      return false;
+    }
+  }
+  / look for corpses/
+  for (Actor* actorAux : engine.actors) {
+   if ( actorAux->destructible && actorAux->destructible->isDead() && actorAux->x == targetx && actorAux->y == targety ) {
+      std::cout<< "There's a "<<actorAux->name<< " here"<<std::endl;
+    }
   }
   owner->x=targetx;
   owner->y=targety;
