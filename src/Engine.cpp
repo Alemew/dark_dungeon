@@ -1,6 +1,6 @@
 #include "Engine.hpp"
 
-Engine::Engine(): computeFov(true), fovRadius(FOVRADIOUS_INICIAL) {
+Engine::Engine(): computeFov(true), fovRadius(FOVRADIOUS_INICIAL),gameStatus(STARTUP) {
   TCODConsole::initRoot(ANCHO_MAPA,ALTO_MAPA,"Mi primer Rouguelite",false);
 
   //Jugador
@@ -20,29 +20,49 @@ Engine::~Engine( ){
 
 
 void Engine::update(){
+
+if (gameStatus == STARTUP)
+{
+  map->computeFov();
+  gameStatus=IDLE;
+}
+
+int dx = 0;
+int dy = 0;
+
   TCOD_key_t key;
   TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
   switch(key.vk) {
       case TCODK_UP :
-        if(map->canWalk(player->x, player->y-1)){
-            player->y--;
-            computeFov = true;
-        }
+        dy = -1;
         break;
-      case TCODK_DOWN :if(map->canWalk(player->x, player->y+1)){
-            player->y++;
-            computeFov = true;
-        }; break;
-      case TCODK_LEFT : if(map->canWalk(player->x-1, player->y)){
-            player->x--;
-            computeFov = true;
-        }; break;
-      case TCODK_RIGHT : if(map->canWalk(player->x+1, player->y)){
-            player->x++;
-            computeFov = true;
-        }; break;
+      case TCODK_DOWN :
+        dy = +1;
+        break;
+      case TCODK_LEFT :
+        dx = -1;
+        break;
+      case TCODK_RIGHT :
+        dx = +1;
+        break;
       default:break;
   }
+
+  if (dy != 0 || dx !=0){
+    gameStatus = NEW_TURN;
+    if(this->player->moveOrAttack(this->player->x+dx,this->player->y+dy)){
+      map->computeFov();
+    }
+  }
+
+  if (gameStatus==NEW_TURN){
+    for (Actor* actorAux : engine.actors){
+      actorAux->update();
+    }
+  }
+
+  gameStatus=IDLE;
+
 }
 
 
@@ -64,4 +84,9 @@ void Engine::render(){
   //re-renderizo el jugador:
   player->render();
   TCODConsole::flush();
+}
+
+void Engine::sendToBack(Actor *actor) {
+   actors.remove(actor);
+   actors.insertBefore(actor,0);
 }

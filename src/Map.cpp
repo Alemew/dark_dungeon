@@ -156,8 +156,9 @@ void Map::setWalkable(int x, int y){
 bool Map::canWalk(int x,int y)const{
   if (isWall(x,y)){
     return false;
-  } for (Actor* actorAux : engine.actors){
-    if (actorAux->x==x && actorAux->y==y){
+  }
+  for (Actor* actorAux : engine.actors){
+    if (actorAux->blocks && actorAux->x==x && actorAux->y==y){
       return false;
     }
   }
