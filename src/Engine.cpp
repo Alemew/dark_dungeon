@@ -4,18 +4,21 @@ Engine::Engine(int screenWidth, int screenHeight) : gameStatus(STARTUP),fovRadiu
    screenWidth(screenWidth),screenHeight(screenHeight) {
    TCODConsole::initRoot(screenWidth,screenHeight,"libtcod C++ tutorial",false);
 
-   player = new Actor(40,25,'@',"player",TCODColor::white);
+   player = new Actor(25,25,'@',TCODColor::white,"player");
    player->destructible=new PlayerDestructible(30,2,"your cadaver");
    player->attacker=new Attacker(5);
    player->ai = new PlayerAi();
    actors.push(player);
 
-  map = new Map(screenWidth, screenHeight);
+  map = new Map(ANCHO_MAPA, ALTO_MAPA);
+  gui = new Gui();
   map->computeFov();
 }
 
+
 Engine::~Engine( ){
   delete map;
+  delete gui;
   actors.clearAndDelete();
 }
 
@@ -25,13 +28,16 @@ void Engine::update(){
   if (gameStatus == STARTUP)
   {
     map->computeFov();
-    gameStatus=IDLE;
   }
   TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&lastKey,NULL);
+  gameStatus=IDLE;
   player->update();
   if (gameStatus==NEW_TURN){
     for (Actor* actorAux : engine.actors){
-      actorAux->update();
+      if (actorAux!=player)
+      {
+        actorAux->update();
+      }
     }
   }
 }
@@ -54,7 +60,7 @@ void Engine::render(){
   }
   //re-renderizo el jugador:
   player->render();
-  TCODConsole::root->print(1,screenHeight-2, "HP : %d/%d",(int)player->destructible->hp,(int)player->destructible->maxHp);
+  gui->render();
   TCODConsole::flush();
 }
 

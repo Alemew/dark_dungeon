@@ -9,7 +9,7 @@ public :
    float defense;
    std::string corpseName; // the actor's name once dead/destroyed
 
-  Destructible(float maxHp, float defense, const char *corpseName);
+  Destructible(float maxHp, float defense, const std::string corpseName);
   inline bool isDead() { return hp <= 0; }
   float takeDamage(Actor *owner, float damage);
   virtual void die(Actor *owner);

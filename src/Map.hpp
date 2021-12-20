@@ -3,7 +3,7 @@
 #pragma once
 
 #define ANCHO_MAPA 80
-#define ALTO_MAPA 50
+#define ALTO_MAPA 43
 
 struct Tile {
    bool explored; //Está explorado?

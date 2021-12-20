@@ -9,7 +9,7 @@ int dy = 0;
 
   TCOD_key_t key;
   TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
-  switch(key.vk) {
+  switch(engine.lastKey.vk) {
       case TCODK_UP :
         dy = -1;
         break;
@@ -22,13 +22,16 @@ int dy = 0;
       case TCODK_RIGHT :
         dx = +1;
         break;
+      case TCODK_0:
+      engine.player->destructible->hp+=10;
+      break;
       default:break;
   }
 
   if (dy != 0 || dx !=0){
-    gameStatus = NEW_TURN;
-    if(this->player->moveOrAttack(this->player->x+dx,this->player->y+dy)){
-      map->computeFov();
+    engine.gameStatus = engine.NEW_TURN;
+    if(this->moveOrAttack(owner,owner->x+dx,owner->y+dy)){
+      engine.map->computeFov();
     }
   }
 }
@@ -44,7 +47,6 @@ bool PlayerAi::moveOrAttack(Actor *owner, int targetx,int targety) {
       return false;
     }
   }
-  / look for corpses/
   for (Actor* actorAux : engine.actors) {
    if ( actorAux->destructible && actorAux->destructible->isDead() && actorAux->x == targetx && actorAux->y == targety ) {
       std::cout<< "There's a "<<actorAux->name<< " here"<<std::endl;
@@ -73,6 +75,8 @@ void MonsterAi::update(Actor *owner) {
 void MonsterAi::moveOrAttack(Actor *owner, int targetx, int targety) {
   int dx = targetx - owner->x;
   int dy = targety - owner->y;
+  int stepdx = (dx > 0 ? 1:-1);
+  int stepdy = (dy > 0 ? 1:-1);
   float distance=sqrtf(dx*dx+dy*dy);
   if ( distance >= 2 ) {
     dx = (int)(round(dx/distance));
@@ -80,6 +84,10 @@ void MonsterAi::moveOrAttack(Actor *owner, int targetx, int targety) {
     if ( engine.map->canWalk(owner->x+dx,owner->y+dy) ) {
       owner->x += dx;
       owner->y += dy;
+    }else if ( engine.map->canWalk(owner->x+stepdx,owner->y) ) {
+      owner->x += stepdx;
+    } else if ( engine.map->canWalk(owner->x,owner->y+stepdy) ) {
+      owner->y += stepdy;
     }
   } else if ( owner->attacker ) {
     owner->attacker->attack(owner,engine.player);

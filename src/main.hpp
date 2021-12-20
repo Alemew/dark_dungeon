@@ -1,3 +1,4 @@
+#pragma once
 #include "libtcod.hpp"
 class Actor;
 #include "Destructible.hpp"
@@ -5,8 +6,10 @@ class Actor;
 #include "Ai.hpp"
 #include "Actor.hpp"
 #include "Map.hpp"
+#include "Gui.hpp"
 #include "Engine.hpp"
+
 
 #include<iostream>
 
-#pragma once
+

@@ -15,6 +15,7 @@ public:
   } gameStatus;  // Declaramos una variable de este enumerado
 
   Map* map;
+  Gui* gui;
   TCODList<Actor*> actors;
   Actor* player;
   int fovRadius;

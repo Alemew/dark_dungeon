@@ -13,24 +13,6 @@ void Actor::update() {
   }
 };
 
-/**
- * Devuelve falso si no se puede mover (pared u enemigo).
- * Si vas contra un enemigo, entonces haces un mensaje de ataque.
- * Si no hay pared ni enemigo, entonces actualizamos la posición de este actor (this) a x e y que pasamos.
- */
-/*bool Actor::moveOrAttack(int x, int y) {
-  if (engine.map->isWall(x,y)){
-    return false;
-  }
-  for (Actor* actorAux : engine.actors){
-    if (actorAux->x==x && actorAux->y==y){
-      std::cout<<"El "<<actorAux->name<<" ni se inmuta"<<std::endl;
-      return false;
-    }
-  }
-  this->x =x;
-  this->y=y;
 
-}*/
 
 
