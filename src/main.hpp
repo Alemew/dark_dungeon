@@ -8,3 +8,5 @@ class Actor;
 #include "Engine.hpp"
 
 #include<iostream>
+
+#pragma once

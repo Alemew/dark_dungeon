@@ -1,6 +1,4 @@
-#include "libtcod.hpp"
-
-
+#include "main.hpp"
 
 #pragma once
 

@@ -1,15 +1,16 @@
-#include "Engine.hpp"
+#include "main.hpp"
 
-Engine::Engine(): computeFov(true), fovRadius(FOVRADIOUS_INICIAL),gameStatus(STARTUP) {
-  TCODConsole::initRoot(ANCHO_MAPA,ALTO_MAPA,"Mi primer Rouguelite",false);
+Engine::Engine(int screenWidth, int screenHeight) : gameStatus(STARTUP),fovRadius(10),
+   screenWidth(screenWidth),screenHeight(screenHeight) {
+   TCODConsole::initRoot(screenWidth,screenHeight,"libtcod C++ tutorial",false);
 
-  //Jugador
-  player = new Actor(25, 25, '@', TCODColor::yellow, "Player");
-  actors.push(player);
+   player = new Actor(40,25,'@',"player",TCODColor::white);
+   player->destructible=new PlayerDestructible(30,2,"your cadaver");
+   player->attacker=new Attacker(5);
+   player->ai = new PlayerAi();
+   actors.push(player);
 
-
-
-  map = new Map(ANCHO_MAPA, ALTO_MAPA);
+  map = new Map(screenWidth, screenHeight);
   map->computeFov();
 }
 
@@ -21,22 +22,18 @@ Engine::~Engine( ){
 
 void Engine::update(){
 
-if (gameStatus == STARTUP)
-{
-  map->computeFov();
-  gameStatus=IDLE;
-}
-
-
-
+  if (gameStatus == STARTUP)
+  {
+    map->computeFov();
+    gameStatus=IDLE;
+  }
+  TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&lastKey,NULL);
+  player->update();
   if (gameStatus==NEW_TURN){
     for (Actor* actorAux : engine.actors){
       actorAux->update();
     }
   }
-
-  gameStatus=IDLE;
-
 }
 
 
@@ -57,6 +54,7 @@ void Engine::render(){
   }
   //re-renderizo el jugador:
   player->render();
+  TCODConsole::root->print(1,screenHeight-2, "HP : %d/%d",(int)player->destructible->hp,(int)player->destructible->maxHp);
   TCODConsole::flush();
 }
 

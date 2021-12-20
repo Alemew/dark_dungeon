@@ -1,7 +1,4 @@
-#include "libtcod.hpp"
-#include "Map.hpp"
-#include "Actor.hpp"
-
+#include "main.hpp"
 
 #pragma once
 #define FOVRADIOUS_INICIAL 10
@@ -22,12 +19,18 @@ public:
   Actor* player;
   int fovRadius;
   bool computeFov;
+  int screenWidth;
+  int screenHeight;
+  TCOD_key_t lastKey;
+
+
 
   Engine();
   ~Engine();
   void update();
   void render() ;
   void sendToBack(Actor *actor);
+  Engine(int screenWidth, int screenHeight);
 };
 
 extern Engine engine;
