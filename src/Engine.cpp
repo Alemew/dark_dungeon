@@ -12,6 +12,8 @@ Engine::Engine(int screenWidth, int screenHeight) : gameStatus(STARTUP),fovRadiu
 
   map = new Map(ANCHO_MAPA, ALTO_MAPA);
   gui = new Gui();
+  gui->message(TCODColor::red,
+ "Welcome warrior!\nPrepare to enter the dungeon of despair.");
   map->computeFov();
 }
 

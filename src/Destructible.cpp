@@ -32,7 +32,7 @@ MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char 
 }
 
 void MonsterDestructible::die(Actor *owner) {
-   std::cout<<owner->name<<" ha muerto"<<std::endl;
+   engine.gui->message(TCODColor::lightGrey,"%s is dead",owner->name);
    Destructible::die(owner);
 }
 
@@ -41,7 +41,7 @@ PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char *c
 }
 
 void PlayerDestructible::die(Actor *owner) {
-   std::cout<<"Has perdido!!!"<<std::endl;
+   engine.gui->message(TCODColor::red,"You died!");
    Destructible::die(owner);
    engine.gameStatus=Engine::DEFEAT;
 }
