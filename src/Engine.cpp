@@ -2,7 +2,7 @@
 
 Engine::Engine(int screenWidth, int screenHeight) : gameStatus(STARTUP),fovRadius(10),
    screenWidth(screenWidth),screenHeight(screenHeight) {
-   TCODConsole::initRoot(screenWidth,screenHeight,"libtcod C++ tutorial",false);
+   TCODConsole::initRoot(screenWidth,screenHeight,"Dark Dungeon",false);
 
    player = new Actor(25,25,'@',TCODColor::white,"player");
    player->destructible=new PlayerDestructible(30,2,"your cadaver");
