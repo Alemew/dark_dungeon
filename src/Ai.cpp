@@ -49,7 +49,7 @@ bool PlayerAi::moveOrAttack(Actor *owner, int targetx,int targety) {
   }
   for (Actor* actorAux : engine.actors) {
    if ( actorAux->destructible && actorAux->destructible->isDead() && actorAux->x == targetx && actorAux->y == targety ) {
-      engine.gui->message(TCODColor::lightGrey,"There's a %s here",actorAux->name);
+      engine.gui->message(TCODColor::lightGrey,"There's a %s here",actorAux->name.c_str());
     }
   }
   owner->x=targetx;

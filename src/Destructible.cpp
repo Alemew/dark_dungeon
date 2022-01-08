@@ -32,7 +32,7 @@ MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char 
 }
 
 void MonsterDestructible::die(Actor *owner) {
-   engine.gui->message(TCODColor::lightGrey,"%s is dead",owner->name);
+   engine.gui->message(TCODColor::lightGrey,"%s is dead",owner->name.c_str());
    Destructible::die(owner);
 }
 
