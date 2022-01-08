@@ -32,6 +32,9 @@ public:
   void render() ;
   void sendToBack(Actor *actor);
   Engine(int screenWidth, int screenHeight);
+  void init();
+  void term();
+  void load();
 };
 
 extern Engine engine;

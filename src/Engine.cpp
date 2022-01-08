@@ -3,25 +3,33 @@
 Engine::Engine(int screenWidth, int screenHeight) : gameStatus(STARTUP),fovRadius(10),
    screenWidth(screenWidth),screenHeight(screenHeight) {
    TCODConsole::initRoot(screenWidth,screenHeight,"Dark Dungeon",false);
+   gui = new Gui();
+}
 
-   player = new Actor(25,25,'@',TCODColor::white,"player");
+void Engine::init(){
+  player = new Actor(25,25,'@',TCODColor::white,"player",2);
    player->destructible=new PlayerDestructible(30,2,"your cadaver");
    player->attacker=new Attacker(5);
    player->ai = new PlayerAi();
    actors.push(player);
 
   map = new Map(ANCHO_MAPA, ALTO_MAPA);
-  gui = new Gui();
   gui->message(TCODColor::red,
  "Welcome warrior!\nPrepare to enter the dungeon of despair.");
+ gameStatus=STARTUP;
   map->computeFov();
 }
 
 
 Engine::~Engine( ){
-  delete map;
+  term();
   delete gui;
+}
+
+void Engine::term(){
   actors.clearAndDelete();
+   if ( map ) delete map;
+   gui->clear();
 }
 
 
@@ -44,8 +52,24 @@ void Engine::update(){
   }
 }
 
+void Engine::load(){
+  engine.gui->menu.clear();
+  engine.gui->menu.addItem(Menu::NEW_GAME,"New game");
+  engine.gui->menu.addItem(Menu::EXIT,"Exit");
+
+  Menu::MenuItemCode menuItem=engine.gui->menu.pick();
+
+  if ( menuItem == Menu::EXIT || menuItem == Menu::NONE ) {
+    engine.term();
+    engine.init();
+  } else if ( menuItem == Menu::NEW_GAME ) {
+    engine.term();
+    engine.init();
+   }
+}
 
 void Engine::render(){
+
   TCODConsole::root->clear();
   //Mapa
   if(computeFov){
@@ -64,6 +88,7 @@ void Engine::render(){
   player->render();
   gui->render();
   TCODConsole::flush();
+
 }
 
 void Engine::sendToBack(Actor *actor) {
