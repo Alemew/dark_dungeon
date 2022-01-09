@@ -184,7 +184,7 @@ void Map::addMonster(int x, int y) {
   }else {
     // 1 de cada 5 veces es un troll con color darkerGreen y caracter 'T'
     Actor* troll = new Actor(x, y, 'T', TCODColor::darkerGreen, "Troll");
-    troll->evasion = 1;
+    troll->evasion = 2;
     troll->fovOnly=false;
     troll->destructible = new MonsterDestructible(16,1,"troll carcass");
     troll->attacker = new Attacker(4);
