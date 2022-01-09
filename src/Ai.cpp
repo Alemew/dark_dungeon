@@ -22,9 +22,6 @@ int dy = 0;
       case TCODK_RIGHT :
         dx = +1;
         break;
-      case TCODK_0:
-      engine.player->destructible->hp+=10;
-      break;
       case TCODK_SPACE :
         if ( engine.stairs->x == owner->x && engine.stairs->y == owner->y ) {
           engine.nextLevel();
