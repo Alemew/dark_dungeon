@@ -25,6 +25,13 @@ int dy = 0;
       case TCODK_0:
       engine.player->destructible->hp+=10;
       break;
+      case TCODK_SPACE :
+        if ( engine.stairs->x == owner->x && engine.stairs->y == owner->y ) {
+          engine.nextLevel();
+        } else {
+          engine.gui->message(TCODColor::lightGrey,"There are no stairs here.");
+        }
+      break;
       default:break;
   }
 

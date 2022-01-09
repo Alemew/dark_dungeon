@@ -18,12 +18,13 @@ public:
   Gui* gui;
   TCODList<Actor*> actors;
   Actor* player;
+  Actor* stairs;
   int fovRadius;
   bool computeFov;
   int screenWidth;
   int screenHeight;
   TCOD_key_t lastKey;
-
+  int level;
 
 
   Engine();
@@ -35,6 +36,7 @@ public:
   void init();
   void term();
   void load();
+  void nextLevel();
 };
 
 extern Engine engine;

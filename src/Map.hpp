@@ -16,6 +16,7 @@ public :
   int width, height;
 
 
+
   Map(int width, int height);
   ~Map();
   bool isWall(int x, int y) const;
@@ -29,10 +30,13 @@ public :
   void computeFov();
   bool canWalk(int x, int y)const;
   void addMonster(int x, int y);
+  void init(bool withActors);
 
 protected :
   Tile *tiles;
   TCODMap *map;
+  long seed;
+  TCODRandom *rng;
 
   void setWall(int x, int y);
   void setWalkable(int x, int y ); //Para hacer dig!

@@ -37,17 +37,20 @@ public :
 
 
 Map::Map(int width, int height): width(width), height(height){
-  //Habrá que inicializar el tiles:
+  seed=TCODRandom::getInstance()->getInt(0,0x7FFFFFFF);
+};
+
+void Map::init(bool withActors) {
+
+  rng = new TCODRandom(seed, TCOD_RNG_CMWC);
   tiles = new Tile[width*height];
   map = new TCODMap(width,height);
 
-  //Creamos el mapa aleatorio
   TCODBsp bsp(0,0,width,height);
   bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
   BspListener listener(*this);
   bsp.traverseInvertedLevelOrder(&listener,NULL);
-
-};
+}
 
 Map::~Map(){
   delete map;
@@ -121,6 +124,8 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2){
       }
     }
   }
+  engine.stairs->x=(x1+x2)/2;
+  engine.stairs->y=(y1+y2)/2;
 };
 
 
@@ -169,14 +174,18 @@ void Map::addMonster(int x, int y) {
   if (rng->getInt(1,5)!=5)
   {
     // 4 de cada 5 veces es un orco con color desaturatedGreen y caracter 'o'
-    Actor* orc = new Actor(x, y, 'O', TCODColor::desaturatedGreen,"Ogro",1);
+    Actor* orc = new Actor(x, y, 'O', TCODColor::desaturatedGreen,"Ogro");
+    orc->evasion = 3;
+    orc->fovOnly=false;
     orc->destructible = new MonsterDestructible(10,0,"dead orc");
     orc->attacker = new Attacker(3);
     orc->ai = new MonsterAi();
     engine.actors.push(orc);
   }else {
     // 1 de cada 5 veces es un troll con color darkerGreen y caracter 'T'
-    Actor* troll = new Actor(x, y, 'T', TCODColor::darkerGreen, "Troll",2);
+    Actor* troll = new Actor(x, y, 'T', TCODColor::darkerGreen, "Troll");
+    troll->evasion = 1;
+    troll->fovOnly=false;
     troll->destructible = new MonsterDestructible(16,1,"troll carcass");
     troll->attacker = new Attacker(4);
     troll->ai = new MonsterAi();
